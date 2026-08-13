@@ -1,6 +1,7 @@
 using ABCRetailManagement.Services;
-
 using Azure.Data.Tables;
+using Azure.Storage.Blobs;
+
 var builder = WebApplication.CreateBuilder(args);
 
 var azureStorageConnectionString =
@@ -15,7 +16,11 @@ if (string.IsNullOrWhiteSpace(azureStorageConnectionString))
 builder.Services.AddSingleton(
     new TableServiceClient(azureStorageConnectionString));
 
+builder.Services.AddSingleton(
+    new BlobServiceClient(azureStorageConnectionString));
+
 builder.Services.AddScoped<TableStorageService>();
+builder.Services.AddScoped<BlobStorageService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

@@ -9,6 +9,7 @@ namespace ABCRetailManagement.Services
         private readonly TableServiceClient _tableServiceClient;
 
         private const string CustomersTableName = "Customers";
+        private const string ProductsTableName = "Products";
 
         public TableStorageService(TableServiceClient tableServiceClient)
         {
@@ -117,6 +118,114 @@ namespace ABCRetailManagement.Services
             await tableClient.DeleteEntityAsync(
                 "CUSTOMER",
                 customerId);
+        }
+
+        private async Task<TableClient> GetProductsTableAsync()
+        {
+            var tableClient =
+                _tableServiceClient.GetTableClient(ProductsTableName);
+
+            await tableClient.CreateIfNotExistsAsync();
+
+            return tableClient;
+        }
+
+        public async Task<List<Product>> GetProductsAsync()
+        {
+            var tableClient = await GetProductsTableAsync();
+
+            var products = new List<Product>();
+
+            await foreach (var entity in tableClient.QueryAsync<ProductEntity>())
+            {
+                products.Add(new Product
+                {
+                    ProductId = entity.RowKey,
+                    Name = entity.Name,
+                    Category = entity.Category,
+                    Price = entity.Price,
+                    Stock = entity.Stock,
+                    ImageName = entity.ImageName
+                });
+            }
+
+            return products;
+        }
+
+        public async Task<string> AddProductAsync(Product product)
+        {
+            var tableClient = await GetProductsTableAsync();
+
+            var productId =
+                $"PROD-{Guid.NewGuid().ToString("N")[..6].ToUpper()}";
+
+            var entity = new ProductEntity
+            {
+                PartitionKey = "PRODUCT",
+                RowKey = productId,
+                Name = product.Name,
+                Category = product.Category,
+                Price = product.Price,
+                Stock = product.Stock,
+                ImageName = product.ImageName ?? string.Empty
+            };
+
+            await tableClient.AddEntityAsync(entity);
+
+            return productId;
+        }
+
+        public async Task<Product?> GetProductAsync(string productId)
+        {
+            var tableClient = await GetProductsTableAsync();
+
+            try
+            {
+                var entity = await tableClient.GetEntityAsync<ProductEntity>(
+                    "PRODUCT",
+                    productId);
+
+                return new Product
+                {
+                    ProductId = entity.Value.RowKey,
+                    Name = entity.Value.Name,
+                    Category = entity.Value.Category,
+                    Price = entity.Value.Price,
+                    Stock = entity.Value.Stock,
+                    ImageName = entity.Value.ImageName
+                };
+            }
+            catch (RequestFailedException ex) when (ex.Status == 404)
+            {
+                return null;
+            }
+        }
+
+        public async Task UpdateProductAsync(Product product)
+        {
+            var tableClient = await GetProductsTableAsync();
+
+            var entity = new ProductEntity
+            {
+                PartitionKey = "PRODUCT",
+                RowKey = product.ProductId,
+                Name = product.Name,
+                Category = product.Category,
+                Price = product.Price,
+                Stock = product.Stock,
+                ImageName = product.ImageName ?? string.Empty
+            };
+
+            await tableClient.UpsertEntityAsync(entity);
+        }
+
+        public async Task DeleteProductAsync(string productId)
+        {
+            var tableClient = await GetProductsTableAsync();
+
+            await tableClient.DeleteEntityAsync(
+                "PRODUCT",
+                productId);
         }
     }
 }

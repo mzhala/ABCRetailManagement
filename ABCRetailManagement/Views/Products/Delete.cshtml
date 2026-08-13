@@ -1,0 +1,59 @@
+﻿
+@model  ABCRetailManagement.Models.Product
+
+@{
+    ViewData["Title"] = "Delete Product";
+}
+
+<h1>Delete Product</h1>
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+<h4>Are you sure you want to delete this product?</h4>
+
+<div class="mb-3">
+    <strong>Product ID:</strong> @Model.ProductId
+</div>
+
+<div class="mb-3">
+    <strong>Name:</strong> @Model.Name
+</div>
+
+<div class="mb-3">
+    <strong>Category:</strong> @Model.Category
+</div>
+
+<div class="mb-3">
+    <strong>Price:</strong> R @Model.Price.ToString("N2")
+</div>
+
+<div class="mb-3">
+    <strong>Stock:</strong> @Model.Stock
+</div>
+
+@if (!string.IsNullOrEmpty(Model.ImageName))
+{
+    <div class="mb-3">
+        <strong>Product Image:</strong>
+        <br />
+
+        <img src="@Url.Action("Image", "Products", new { fileName = Model.ImageName })"
+             alt="@Model.Name"
+             width="120"
+             height="120" />
+    </div>
+}
+
+<form asp-action="Delete" method="post">
+
+    <input type="hidden" asp-for="ProductId" />
+
+    <button type="submit" class="btn btn-danger">
+        Delete Product
+    </button>
+
+    <a asp-action="Index" class="btn btn-secondary">
+        Cancel
+    </a>
+
+</form>

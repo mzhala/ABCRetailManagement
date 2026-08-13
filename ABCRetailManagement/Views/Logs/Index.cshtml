@@ -1,0 +1,81 @@
+﻿@model IEnumerable<string>
+
+@{
+    ViewData["Title"] = "Application Logs";
+}
+
+<div class="page-container logs-page">
+
+    <div class="page-header">
+
+        <div>
+
+            <p class="page-eyebrow">
+                AZURE FILES
+            </p>
+
+            <h1 class="page-title">
+                LOGS
+            </h1>
+
+            <p class="page-description">
+                Daily application activity logs stored in Azure Files.
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="page-divider"></div>
+
+    <div class="table-meta">
+        <span>@Model.Count() LOG FILES</span>
+    </div>
+
+    <div class="data-table-wrapper">
+
+        <table class="data-table logs-table">
+
+            <thead>
+                <tr>
+                    <th>Log File</th>
+                    <th class="actions-column">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @foreach (var file in Model)
+                {
+                    <tr>
+
+                        <td class="id-cell">
+                            @file
+                        </td>
+
+                        <td class="actions-cell">
+
+                            <a asp-action="ViewLog"
+                               asp-route-id="@file"
+                               class="table-action view-action">
+                                View
+                            </a>
+
+                            <a asp-action="Download"
+                               asp-route-id="@file"
+                               class="table-action download-action">
+                                Download
+                            </a>
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>

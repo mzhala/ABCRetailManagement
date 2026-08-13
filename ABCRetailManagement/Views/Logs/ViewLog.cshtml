@@ -1,0 +1,46 @@
+﻿@model string
+
+@{
+    ViewData["Title"] = "View Log";
+}
+
+<div class="page-container logs-page">
+
+    <div class="page-header">
+
+        <div>
+
+            <p class="page-eyebrow">
+                AZURE FILES
+            </p>
+
+            <h1 class="page-title">
+                @ViewBag.FileName
+            </h1>
+
+            <p class="page-description">
+                Application activity recorded in this log file.
+            </p>
+
+        </div>
+
+        <div class="page-header-action">
+
+            <a asp-action="Index"
+               class="form-secondary">
+                Back to Logs
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="page-divider"></div>
+
+    <div class="log-content-wrapper">
+
+        <pre class="log-content">@Model</pre>
+
+    </div>
+
+</div>

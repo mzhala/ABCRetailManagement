@@ -10,6 +10,7 @@ namespace ABCRetailManagement.Services
 
         private const string CustomersTableName = "Customers";
         private const string ProductsTableName = "Products";
+        private const string OrdersTableName = "Orders";
 
         public TableStorageService(TableServiceClient tableServiceClient)
         {
@@ -120,6 +121,8 @@ namespace ABCRetailManagement.Services
                 customerId);
         }
 
+        // Products
+
         private async Task<TableClient> GetProductsTableAsync()
         {
             var tableClient =
@@ -227,5 +230,116 @@ namespace ABCRetailManagement.Services
                 "PRODUCT",
                 productId);
         }
+
+        //Orders
+        private async Task<TableClient> GetOrdersTableAsync()
+        {
+            var tableClient =
+                _tableServiceClient.GetTableClient(OrdersTableName);
+
+            await tableClient.CreateIfNotExistsAsync();
+
+            return tableClient;
+        }
+
+        public async Task<List<Order>> GetOrdersAsync()
+        {
+            var tableClient = await GetOrdersTableAsync();
+
+            var orders = new List<Order>();
+
+            await foreach (var entity in tableClient.QueryAsync<OrderEntity>())
+            {
+                orders.Add(new Order
+                {
+                    OrderId = entity.RowKey,
+                    CustomerId = entity.CustomerId,
+                    ProductId = entity.ProductId,
+                    Quantity = entity.Quantity,
+                    Status = entity.Status,
+                    OrderDate = entity.OrderDate
+                });
+            }
+
+            return orders;
+        }
+
+        public async Task<Order?> GetOrderAsync(string orderId)
+        {
+            var tableClient = await GetOrdersTableAsync();
+
+            try
+            {
+                var entity = await tableClient.GetEntityAsync<OrderEntity>(
+                    "ORDER",
+                    orderId);
+
+                return new Order
+                {
+                    OrderId = entity.Value.RowKey,
+                    CustomerId = entity.Value.CustomerId,
+                    ProductId = entity.Value.ProductId,
+                    Quantity = entity.Value.Quantity,
+                    Status = entity.Value.Status,
+                    OrderDate = entity.Value.OrderDate
+                };
+            }
+            catch (RequestFailedException ex) when (ex.Status == 404)
+            {
+                return null;
+            }
+        }
+
+        public async Task<string> AddOrderAsync(Order order)
+        {
+            var tableClient = await GetOrdersTableAsync();
+
+            var orderId =
+                $"ORD-{Guid.NewGuid().ToString("N")[..6].ToUpper()}";
+
+            var entity = new OrderEntity
+            {
+                PartitionKey = "ORDER",
+                RowKey = orderId,
+                CustomerId = order.CustomerId,
+                ProductId = order.ProductId,
+                Quantity = order.Quantity,
+                Status = "Pending",
+                OrderDate = DateTime.UtcNow
+            };
+
+            await tableClient.AddEntityAsync(entity);
+
+            return orderId;
+        }
+
+        public async Task UpdateOrderAsync(Order order)
+        {
+            var tableClient = await GetOrdersTableAsync();
+
+            var entity = new OrderEntity
+            {
+                PartitionKey = "ORDER",
+                RowKey = order.OrderId,
+                CustomerId = order.CustomerId,
+                ProductId = order.ProductId,
+                Quantity = order.Quantity,
+                Status = order.Status,
+                OrderDate = order.OrderDate
+            };
+
+            await tableClient.UpsertEntityAsync(entity);
+        }
+
+        public async Task DeleteOrderAsync(string orderId)
+        {
+            var tableClient = await GetOrdersTableAsync();
+
+            await tableClient.DeleteEntityAsync(
+                "ORDER",
+                orderId);
+        }
+
+
     }
 }

@@ -1,0 +1,44 @@
+﻿@model ABCRetailManagement.Models.Order
+
+@{
+    ViewData["Title"] = "Delete Order";
+}
+
+<h1>Delete Order</h1>
+
+<h4>Are you sure you want to delete this order?</h4>
+
+<div class="mb-3">
+    <strong>Order ID:</strong> @Model.OrderId
+</div>
+
+<div class="mb-3">
+    <strong>Customer:</strong> @Model.CustomerId
+</div>
+
+<div class="mb-3">
+    <strong>Product:</strong> @Model.ProductId
+</div>
+
+<div class="mb-3">
+    <strong>Quantity:</strong> @Model.Quantity
+</div>
+
+<div class="mb-3">
+    <strong>Status:</strong> @Model.Status
+</div>
+
+<form asp-action="Delete" method="post">
+
+    <input type="hidden" asp-for="OrderId" />
+
+    <button type="submit" class="btn btn-danger">
+        Delete Order
+    </button>
+
+    <a asp-action="Index"
+       class="btn btn-secondary">
+        Cancel
+    </a>
+
+</form>

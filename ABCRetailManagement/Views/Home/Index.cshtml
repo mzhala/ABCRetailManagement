@@ -1,8 +1,116 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="home-page">
+
+    <!-- Hero -->
+    <section class="hero-section">
+
+        <div class="hero-content">
+
+            <p class="eyebrow">ABC RETAIL · AZURE STORAGE SERVICES</p>
+
+            <h1>
+                RETAIL,<br />
+                AT A<br />
+                GLANCE.
+            </h1>
+
+            <p class="hero-description">
+                Manage customers, products, orders and retail
+                operations through one connected storage platform.
+            </p>
+
+        </div>
+
+        <div class="hero-image">
+            <img src="~/images/dashboard-hero.jpg"
+                 alt="ABC Retail" />
+        </div>
+
+    </section>
+
+    <!-- Storage sections -->
+    <section class="storage-section">
+
+        <div class="section-heading">
+            <h2>STORE. PROCESS. DELIVER.</h2>
+            <span>FOUR AZURE STORAGE SERVICES</span>
+        </div>
+
+        <div class="storage-grid">
+
+            <!-- Customers -->
+            <a asp-controller="Customers"
+               asp-action="Index"
+               class="storage-card table-card">
+
+                <div class="storage-line"></div>
+
+                <h3>TABLE STORAGE</h3>
+
+                <p>Customer Data</p>
+
+                <div class="storage-action">
+                    View customers <span>→</span>
+                </div>
+
+            </a>
+
+            <!-- Products -->
+            <a asp-controller="Products"
+               asp-action="Index"
+               class="storage-card blob-card">
+
+                <div class="storage-line"></div>
+
+                <h3>BLOB STORAGE</h3>
+
+                <p>Product Images &amp; Media</p>
+
+                <div class="storage-action">
+                    View products <span>→</span>
+                </div>
+
+            </a>
+
+            <!-- Orders -->
+            <a asp-controller="Orders"
+               asp-action="Index"
+               class="storage-card queue-card">
+
+                <div class="storage-line"></div>
+
+                <h3>QUEUE STORAGE</h3>
+
+                <p>Order Processing</p>
+
+                <div class="storage-action">
+                    View orders <span>→</span>
+                </div>
+
+            </a>
+
+            <!-- Logs -->
+            <a asp-controller="Logs"
+               asp-action="Index"
+               class="storage-card files-card">
+
+                <div class="storage-line"></div>
+
+                <h3>AZURE FILES</h3>
+
+                <p>Application Logs</p>
+
+                <div class="storage-action">
+                    View logs <span>→</span>
+                </div>
+
+            </a>
+
+        </div>
+
+    </section>
+
 </div>

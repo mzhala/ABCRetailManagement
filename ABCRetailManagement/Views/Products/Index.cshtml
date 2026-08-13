@@ -4,57 +4,109 @@
     ViewData["Title"] = "Products";
 }
 
-<h1>Products</h1>
+<div class="page-container products-page">
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">
-        Add Product
-    </a>
-</p>
+    <div class="page-header">
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Product ID</th>
-            <th>Name</th>
-            <th>Category</th>
-            <th>Price</th>
-            <th>Stock</th>
-            <th>Image</th>
-            <th></th>
-        </tr>
-    </thead>
+        <div>
+            <p class="page-eyebrow">AZURE TABLE STORAGE AND BLOB STORAGE</p>
 
-    <tbody>
+            <h1 class="page-title">PRODUCTS</h1>
+
+            <p class="page-description">
+                Product information stored using Azure Table Storage.
+                Product imagery is referenced from the Blob Storage container.
+            </p>
+        </div>
+
+        <div class="page-header-action">
+            <a asp-action="Create" class="primary-action">
+                <span>+</span> Add Product
+            </a>
+        </div>
+
+    </div>
+
+    <div class="page-divider"></div>
+
+    <div class="table-meta">
+        <span>@Model.Count() PRODUCTS</span>
+    </div>
+
+    <div class="product-grid">
+
         @foreach (var product in Model)
         {
-            <tr>
-                <td>@product.ProductId</td>
-                <td>@product.Name</td>
-                <td>@product.Category</td>
-                <td>R @product.Price.ToString("N2")</td>
-                <td>@product.Stock</td>
-                <td>
+            <div class="product-card">
+
+                <div class="product-image">
+
                     @if (!string.IsNullOrEmpty(product.ImageName))
                     {
                         <img src="@Url.Action("Image", "Products", new { fileName = product.ImageName })"
-                             alt="@product.Name"
-                             width="80"
-                             height="80" />
+                             alt="@product.Name" />
                     }
-                </td>
-                <td>
-                    <a asp-action="Edit"
-                       asp-route-id="@product.ProductId">
-                        Edit
-                    </a>
-                    |
-                    <a asp-action="Delete"
-                       asp-route-id="@product.ProductId">
-                        Delete
-                    </a>
-                </td>
-            </tr>
+                    else
+                    {
+                        <img src="~/images/product-default.png"
+                             alt="Default product image" />
+                    }
+
+                </div>
+
+                <div class="product-info">
+
+                    <div class="product-main">
+
+                        <h2>@product.Name</h2>
+
+                        <span class="product-price">
+                            R @product.Price.ToString("N2")
+                        </span>
+
+                    </div>
+
+                    <div class="product-bottom">
+
+                        <p class="product-category">
+                            @product.Category
+                        </p>
+
+                        <span class="product-id">
+                            @product.ProductId
+                        </span>
+
+                    </div>
+
+                    <div class="product-bottom">
+
+                        <span class="stock-badge">
+                            @product.Stock IN STOCK
+                        </span>
+
+                        <div class="product-actions">
+
+                            <a asp-action="Edit"
+                               asp-route-id="@product.ProductId"
+                               class="table-action">
+                                Edit
+                            </a>
+
+                            <a asp-action="Delete"
+                               asp-route-id="@product.ProductId"
+                               class="table-action delete-action">
+                                Delete
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
         }
-    </tbody>
-</table>
+
+    </div>
+
+</div>

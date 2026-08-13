@@ -4,61 +4,103 @@
     ViewData["Title"] = "Add Product";
 }
 
-<h1>Add Product</h1>
+<div class="form-page">
 
-<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <div class="form-card">
 
-    <div asp-validation-summary="ModelOnly"
-         class="text-danger"></div>
+        <p class="form-eyebrow">AZURE TABLE STORAGE</p>
 
-    <div class="mb-3">
-        <label asp-for="Name" class="form-label"></label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name"
-              class="text-danger"></span>
+        <h1 class="form-title">CREATE PRODUCT</h1>
+
+        <form asp-action="Create"
+              method="post"
+              enctype="multipart/form-data">
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-3"></div>
+
+            <div class="form-group">
+                <label asp-for="Name" class="form-label">
+                    Name
+                </label>
+
+                <input asp-for="Name"
+                       class="form-control" />
+
+                <span asp-validation-for="Name"
+                      class="field-validation-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Category" class="form-label">
+                    Category
+                </label>
+
+                <input asp-for="Category"
+                       class="form-control" />
+
+                <span asp-validation-for="Category"
+                      class="field-validation-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Price" class="form-label">
+                    Price
+                </label>
+
+                <input asp-for="Price"
+                       type="number"
+                       step="0.01"
+                       class="form-control" />
+
+                <span asp-validation-for="Price"
+                      class="field-validation-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Stock" class="form-label">
+                    Stock
+                </label>
+
+                <input asp-for="Stock"
+                       type="number"
+                       class="form-control" />
+
+                <span asp-validation-for="Stock"
+                      class="field-validation-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    Product Image
+                </label>
+
+                <input type="file"
+                       name="image"
+                       class="form-control"
+                       accept="image/*" />
+
+                <span class="form-hint">
+                    Upload an image for this product.
+                </span>
+            </div>
+
+            <div class="form-actions">
+
+                <button type="submit"
+                        class="form-primary">
+                    Add Product
+                </button>
+
+                <a asp-action="Index"
+                   class="form-secondary">
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
     </div>
 
-    <div class="mb-3">
-        <label asp-for="Category" class="form-label"></label>
-        <input asp-for="Category" class="form-control" />
-        <span asp-validation-for="Category"
-              class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Price" class="form-label"></label>
-        <input asp-for="Price"
-               type="number"
-               step="0.01"
-               class="form-control" />
-        <span asp-validation-for="Price"
-              class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Stock" class="form-label"></label>
-        <input asp-for="Stock"
-               type="number"
-               class="form-control" />
-        <span asp-validation-for="Stock"
-              class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-    <label class="form-label">Product Image</label>
-    <input type="file"
-           name="image"
-           class="form-control"
-           accept="image/*" />
 </div>
-
-    <button type="submit" class="btn btn-primary">
-        Save Product
-    </button>
-
-    <a asp-action="Index"
-       class="btn btn-secondary">
-        Cancel
-    </a>
-
-</form>

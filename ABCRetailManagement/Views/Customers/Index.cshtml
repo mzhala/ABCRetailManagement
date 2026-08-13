@@ -4,45 +4,99 @@
     ViewData["Title"] = "Customers";
 }
 
-<h1>Customers</h1>
+<div class="page-container customers-page">
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Add Customer</a>
-</p>
+    <div class="page-header">
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Customer ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>Location</th>
-            <th></th>
-        </tr>
-    </thead>
+        <div>
+            <p class="page-eyebrow">AZURE TABLE STORAGE</p>
 
-    <tbody>
-        @foreach (var customer in Model)
-        {
-            <tr>
-                <td>@customer.CustomerId</td>
-                <td>@customer.Name</td>
-                <td>@customer.Email</td>
-                <td>@customer.Phone</td>
-                <td>@customer.Location</td>
-                <td>
-                    <a asp-action="Edit"
-                       asp-route-id="@customer.CustomerId">
-                        Edit
-                    </a>
-                    |
-                    <a asp-action="Delete"
-                       asp-route-id="@customer.CustomerId">
-                        Delete
-                    </a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+            <h1 class="page-title">CUSTOMERS</h1>
+
+            <p class="page-description">
+                Customer profiles stored using Azure Table Storage.
+                Each customer is stored as a table entity with a partition key and row key.
+            </p>
+        </div>
+
+        <div class="page-header-action">
+            <a asp-action="Create" class="primary-action">
+                <span>+</span> Add Customer
+            </a>
+        </div>
+
+    </div>
+
+    <div class="page-divider"></div>
+
+    <div class="table-meta">
+        <span>@Model.Count() customers</span>
+    </div>
+
+    <div class="data-table-wrapper">
+
+        <table class="data-table">
+
+            <thead>
+                <tr>
+                    <th>Customer ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Location</th>
+                    <th class="actions-column">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @foreach (var customer in Model)
+                {
+                    <tr>
+
+                        <td class="id-cell">
+                            @customer.CustomerId
+                        </td>
+
+                        <td class="name-cell">
+                            @customer.Name
+                        </td>
+
+                        <td>
+                            @customer.Email
+                        </td>
+
+                        <td>
+                            @customer.Phone
+                        </td>
+
+                        <td>
+                            @customer.Location
+                        </td>
+
+                        <td class="actions-cell">
+
+                            <a asp-action="Edit"
+                               asp-route-id="@customer.CustomerId"
+                               class="table-action">
+                                Edit
+                            </a>
+
+                            <a asp-action="Delete"
+                               asp-route-id="@customer.CustomerId"
+                               class="table-action delete-action">
+                                Delete
+                            </a>
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>

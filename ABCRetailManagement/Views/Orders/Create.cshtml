@@ -4,62 +4,108 @@
     ViewData["Title"] = "Create Order";
 }
 
-<h1>Create Order</h1>
+<div class="form-page">
 
-<form asp-action="Create" method="post">
+    <div class="form-card">
 
-    <div asp-validation-summary="ModelOnly"
-         class="text-danger"></div>
+        <p class="form-eyebrow">AZURE QUEUE STORAGE</p>
 
-    <div class="mb-3">
-        <label asp-for="CustomerId" class="form-label"></label>
-        <select asp-for="CustomerId" class="form-select">
-            <option value="">Select a customer</option>
+        <h1 class="form-title">CREATE ORDER</h1>
 
-            @foreach (var customer in ViewBag.Customers)
-            {
-                <option value="@customer.CustomerId">
-                    @customer.CustomerId: @customer.Name
-                </option>
-            }
-        </select>
-        <span asp-validation-for="CustomerId"
-              class="text-danger"></span>
+        <form asp-action="Create" method="post">
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-3"></div>
+
+            <div class="form-group">
+
+                <label asp-for="CustomerId"
+                       class="form-label">
+                    Customer
+                </label>
+
+                <select asp-for="CustomerId"
+                        class="form-control">
+
+                    <option value="">
+                        Select a customer
+                    </option>
+
+                    @foreach (var customer in ViewBag.Customers)
+                    {
+                        <option value="@customer.CustomerId">
+                            @customer.CustomerId: @customer.Name
+                        </option>
+                    }
+
+                </select>
+
+                <span asp-validation-for="CustomerId"
+                      class="field-validation-error"></span>
+
+            </div>
+
+            <div class="form-group">
+
+                <label asp-for="ProductId"
+                       class="form-label">
+                    Product
+                </label>
+
+                <select asp-for="ProductId"
+                        class="form-control">
+
+                    <option value="">
+                        Select a product
+                    </option>
+
+                    @foreach (var product in ViewBag.Products)
+                    {
+                        <option value="@product.ProductId">
+                            @product.ProductId: @product.Name
+                        </option>
+                    }
+
+                </select>
+
+                <span asp-validation-for="ProductId"
+                      class="field-validation-error"></span>
+
+            </div>
+
+            <div class="form-group">
+
+                <label asp-for="Quantity"
+                       class="form-label">
+                    Quantity
+                </label>
+
+                <input asp-for="Quantity"
+                       type="number"
+                       min="1"
+                       class="form-control" />
+
+                <span asp-validation-for="Quantity"
+                      class="field-validation-error"></span>
+
+            </div>
+
+            <div class="form-actions">
+
+                <button type="submit"
+                        class="form-primary">
+                    Create Order
+                </button>
+
+                <a asp-action="Index"
+                   class="form-secondary">
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
     </div>
 
-    <div class="mb-3">
-        <label asp-for="ProductId" class="form-label"></label>
-        <select asp-for="ProductId" class="form-select">
-            <option value="">Select a product</option>
-
-            @foreach (var product in ViewBag.Products)
-            {
-                <option value="@product.ProductId">
-                   @product.ProductId: @product.Name
-                </option>
-            }
-        </select>
-        <span asp-validation-for="ProductId"
-              class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Quantity" class="form-label"></label>
-        <input asp-for="Quantity"
-               type="number"
-               min="1"
-               class="form-control" />
-        <span asp-validation-for="Quantity"
-              class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">
-        Create Order
-    </button>
-
-    <a asp-action="Index"
-       class="btn btn-secondary">
-        Cancel
-    </a>
-
-</form>
+</div>

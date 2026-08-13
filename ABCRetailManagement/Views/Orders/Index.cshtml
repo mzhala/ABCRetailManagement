@@ -2,75 +2,175 @@
 
 @{
     ViewData["Title"] = "Orders";
+
+    var customers =
+        (IEnumerable<ABCRetailManagement.Models.Customer>)ViewBag.Customers;
+
+    var products =
+        (IEnumerable<ABCRetailManagement.Models.Product>)ViewBag.Products;
+
+    var pendingCount = Model.Count(o =>
+        string.Equals(o.Status, "Pending", StringComparison.OrdinalIgnoreCase));
+
+    var processingCount = Model.Count(o =>
+        string.Equals(o.Status, "Processing", StringComparison.OrdinalIgnoreCase));
+
+    var completedCount = Model.Count(o =>
+        string.Equals(o.Status, "Completed", StringComparison.OrdinalIgnoreCase));
 }
 
-<h1>Orders</h1>
+<div class="page-container orders-page">
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">
-        Create Order
-    </a>
-</p>
+    <!-- Page Header -->
 
-<form asp-action="ProcessNext" method="post" class="mb-3">
-    <button type="submit" class="btn btn-primary">
-        Process Next Order
-    </button>
-</form>
+    <div class="page-header">
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Order ID</th>
-            <th>Customer</th>
-            <th>Product</th>
-            <th>Quantity</th>
-            <th>Status</th>
-            <th>Order Date</th>
-            <th></th>
-        </tr>
-    </thead>
+        <div>
+            <p class="page-eyebrow">AZURE QUEUE STORAGE</p>
 
-    <tbody>
-        @foreach (var order in Model)
-        {
-            var customer = ((IEnumerable<ABCRetailManagement.Models.Customer>)ViewBag.Customers)
-            .FirstOrDefault(c => c.CustomerId == order.CustomerId);
+            <h1 class="page-title">ORDERS</h1>
 
-            var product = ((IEnumerable<ABCRetailManagement.Models.Product>)ViewBag.Products)
-            .FirstOrDefault(p => p.ProductId == order.ProductId);
+            <p class="page-description">
+                Orders are placed into Azure Queue Storage for processing.
+                Each new order becomes a queue message consumed by the processing worker.
+            </p>
+        </div>
 
-            <tr>
-                <td>@order.OrderId</td>
+        <div class="page-header-action order-header-actions">
 
-                <td>
-                    @order.CustomerId : @(customer?.Name ?? "Unknown Customer")
-                </td>
+            <form asp-action="ProcessNext"
+                  method="post">
 
-                <td>
-                    @order.ProductId : @(product?.Name ?? "Unknown Product")
-                </td>
+                <button type="submit"
+                        class="secondary-action">
+                    Process Next Order
+                </button>
 
-                <td>@order.Quantity</td>
+            </form>
 
-                <td>@order.Status</td>
+            <a asp-action="Create" class="primary-action">
+                <span>+</span> Create Order
+            </a>
 
-                <td>
-                    @order.OrderDate.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
-                </td>
+        </div>
 
-                <td>
-                    <a asp-action="Edit"
-                       asp-route-id="@order.OrderId">
-                        Edit
-                    </a>
-                    |
-                    <a asp-action="Delete"
-                       asp-route-id="@order.OrderId">
-                        Delete
-                    </a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+    </div>
+
+    <div class="page-divider"></div>
+
+
+    <!-- Order Status Summary -->
+
+    <div class="order-summary">
+
+        <div class="order-summary-card">
+            <p>PENDING</p>
+            <strong>@pendingCount</strong>
+        </div>
+
+        <div class="order-summary-card">
+            <p>PROCESSING</p>
+            <strong>@processingCount</strong>
+        </div>
+
+        <div class="order-summary-card">
+            <p>COMPLETED</p>
+            <strong>@completedCount</strong>
+        </div>
+
+    </div>
+
+
+
+
+    <!-- Orders Count -->
+
+    <div class="table-meta">
+        <span>@Model.Count() ORDERS</span>
+    </div>
+
+
+    <!-- Orders Table -->
+    <div class="data-table-wrapper">
+
+        <table class="data-table orders-table">
+
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Date</th>
+                    <th>Customer</th>
+                    <th>Product</th>
+                    <th>Qty</th>
+                   
+                    <th>Status</th>
+                    <th class="actions-column">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @foreach (var order in Model)
+                {
+                    var customer = customers
+                    .FirstOrDefault(c => c.CustomerId == order.CustomerId);
+
+                    var product = products
+                    .FirstOrDefault(p => p.ProductId == order.ProductId);
+
+                    <tr>
+
+                        <td class="id-cell">
+                            @order.OrderId
+                        </td>
+
+                        <td>
+                            @order.OrderDate.ToLocalTime().ToString("dd MMM yyyy HH:mm")
+                        </td>
+
+                        <td class="name-cell">
+                            @(customer?.Name ?? "Unknown Customer")
+                        </td>
+
+                        <td>
+                            @(product?.Name ?? "Unknown Product")
+                        </td>
+
+                        <td>
+                            @order.Quantity
+                        </td>
+
+                        
+
+                        <td>
+                            <span class="order-status @order.Status?.ToLower()">
+                                @order.Status
+                            </span>
+                        </td>
+
+                        <td class="actions-cell">
+
+                            <a asp-action="Edit"
+                               asp-route-id="@order.OrderId"
+                               class="table-action">
+                                Edit
+                            </a>
+
+                            <a asp-action="Delete"
+                               asp-route-id="@order.OrderId"
+                               class="table-action delete-action">
+                                Delete
+                            </a>
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>

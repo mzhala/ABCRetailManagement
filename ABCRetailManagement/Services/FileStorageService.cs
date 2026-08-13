@@ -68,5 +68,78 @@ namespace ABCRetailManagement.Services
             await fileClient.UploadAsync(
                 stream);
         }
+
+        public async Task<List<string>> GetLogFilesAsync()
+        {
+            var shareClient = await GetShareAsync();
+
+            var directoryClient =
+                shareClient.GetDirectoryClient("logs");
+
+            var files = new List<string>();
+
+            await foreach (var item in directoryClient.GetFilesAndDirectoriesAsync())
+            {
+                if (!item.IsDirectory)
+                {
+                    files.Add(item.Name);
+                }
+            }
+
+            return files
+                .OrderByDescending(f => f)
+                .ToList();
+        }
+
+        public async Task<string?> ReadLogAsync(string fileName)
+        {
+            var shareClient = await GetShareAsync();
+
+            var directoryClient =
+                shareClient.GetDirectoryClient("logs");
+
+            var fileClient =
+                directoryClient.GetFileClient(fileName);
+
+            if (!await fileClient.ExistsAsync())
+            {
+                return null;
+            }
+
+            var response =
+                await fileClient.DownloadAsync();
+
+            using var reader =
+                new StreamReader(response.Value.Content);
+
+            return await reader.ReadToEndAsync();
+        }
+
+        public async Task<Stream?> DownloadLogAsync(string fileName)
+        {
+            var shareClient = await GetShareAsync();
+
+            var directoryClient =
+                shareClient.GetDirectoryClient("logs");
+
+            var fileClient =
+                directoryClient.GetFileClient(fileName);
+
+            if (!await fileClient.ExistsAsync())
+            {
+                return null;
+            }
+
+            var response =
+                await fileClient.DownloadAsync();
+
+            var memoryStream = new MemoryStream();
+
+            await response.Value.Content.CopyToAsync(memoryStream);
+
+            memoryStream.Position = 0;
+
+            return memoryStream;
+        }
     }
 }

@@ -8,13 +8,17 @@ namespace ABCRetailManagement.Controllers
     {
         private readonly TableStorageService _tableStorageService;
         private readonly BlobStorageService _blobStorageService;
+        private readonly FileStorageService _fileStorageService;
 
         public ProductsController(
             TableStorageService tableStorageService,
-            BlobStorageService blobStorageService)
+            BlobStorageService blobStorageService,
+            FileStorageService fileStorageService
+            )
         {
             _tableStorageService = tableStorageService;
             _blobStorageService = blobStorageService;
+            _fileStorageService = fileStorageService;
         }
 
         public async Task<IActionResult> Index()
@@ -47,6 +51,9 @@ namespace ABCRetailManagement.Controllers
                 }
 
                 await _tableStorageService.AddProductAsync(product);
+
+                await _fileStorageService.WriteLogAsync(
+                    $"Product {product.ProductId} created.");
 
                 return RedirectToAction(nameof(Index));
             }
@@ -91,6 +98,9 @@ namespace ABCRetailManagement.Controllers
 
                 await _tableStorageService.UpdateProductAsync(product);
 
+                await _fileStorageService.WriteLogAsync(
+                    $"Product {product.ProductId} updated.");
+
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception)
@@ -134,6 +144,9 @@ namespace ABCRetailManagement.Controllers
                 }
 
                 await _tableStorageService.DeleteProductAsync(id);
+
+                await _fileStorageService.WriteLogAsync(
+                    $"Product {id} deleted.");
 
                 return RedirectToAction(nameof(Index));
             }

@@ -6,13 +6,17 @@ namespace ABCRetailManagement.Services
     {
         private readonly QueueStorageService _queueStorageService;
         private readonly TableStorageService _tableStorageService;
+        private readonly FileStorageService _fileStorageService;
 
         public OrderProcessingService(
             QueueStorageService queueStorageService,
-            TableStorageService tableStorageService)
+            TableStorageService tableStorageService,
+            FileStorageService fileStorageService
+            )
         {
             _queueStorageService = queueStorageService;
             _tableStorageService = tableStorageService;
+            _fileStorageService = fileStorageService;
         }
 
         public async Task ProcessNextOrderAsync()
@@ -74,6 +78,9 @@ namespace ABCRetailManagement.Services
 
                 await _tableStorageService.UpdateOrderAsync(order);
 
+                await _fileStorageService.WriteLogAsync(
+                    $"Order {order.OrderId} failed because there was insufficient stock.");
+
                 await _queueStorageService.DeleteMessageAsync(
                     message.Value.MessageId,
                     message.Value.PopReceipt);
@@ -88,6 +95,9 @@ namespace ABCRetailManagement.Services
             order.Status = "Completed";
 
             await _tableStorageService.UpdateOrderAsync(order);
+
+            await _fileStorageService.WriteLogAsync(
+                $"Order {order.OrderId} processed successfully.");
 
             await _queueStorageService.DeleteMessageAsync(
                 message.Value.MessageId,

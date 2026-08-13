@@ -7,10 +7,13 @@ namespace ABCRetailManagement.Controllers
     public class CustomersController : Controller
     {
         private readonly TableStorageService _tableStorageService;
+        private readonly FileStorageService _fileStorageService;
 
-        public CustomersController(TableStorageService tableStorageService)
+        public CustomersController(TableStorageService tableStorageService,
+            FileStorageService fileStorageService)
         {
             _tableStorageService = tableStorageService;
+            _fileStorageService = fileStorageService;
         }
 
         public async Task<IActionResult> Index()
@@ -35,6 +38,9 @@ namespace ABCRetailManagement.Controllers
             }
 
             await _tableStorageService.AddCustomerAsync(customer);
+
+            await _fileStorageService.WriteLogAsync(
+                $"Customer {customer.CustomerId} created.");
 
             return RedirectToAction(nameof(Index));
         }
@@ -62,6 +68,9 @@ namespace ABCRetailManagement.Controllers
 
             await _tableStorageService.UpdateCustomerAsync(customer);
 
+            await _fileStorageService.WriteLogAsync(
+                $"Customer {customer.CustomerId} updated.");
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -82,6 +91,9 @@ namespace ABCRetailManagement.Controllers
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             await _tableStorageService.DeleteCustomerAsync(id);
+
+            await _fileStorageService.WriteLogAsync(
+                $"Customer {id} deleted.");
 
             return RedirectToAction(nameof(Index));
         }

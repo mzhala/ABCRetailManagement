@@ -9,15 +9,19 @@ namespace ABCRetailManagement.Controllers
         private readonly TableStorageService _tableStorageService;
         private readonly QueueStorageService _queueStorageService;
         private readonly OrderProcessingService _orderProcessingService;
+        private readonly FileStorageService _fileStorageService;
 
         public OrdersController(
             TableStorageService tableStorageService,
             QueueStorageService queueStorageService,
-            OrderProcessingService orderProcessingService)
+            OrderProcessingService orderProcessingService,
+            FileStorageService fileStorageService
+            )
         {
             _tableStorageService = tableStorageService;
             _queueStorageService = queueStorageService;
             _orderProcessingService = orderProcessingService;
+            _fileStorageService = fileStorageService;
         }
 
         public async Task<IActionResult> Index()
@@ -57,6 +61,9 @@ namespace ABCRetailManagement.Controllers
                     order.CustomerId,
                     order.ProductId,
                     order.Quantity);
+
+                await _fileStorageService.WriteLogAsync(
+                    $"Order {orderId} created.");
 
                 return RedirectToAction(nameof(Index));
             }
@@ -110,6 +117,9 @@ namespace ABCRetailManagement.Controllers
 
                 await _tableStorageService.UpdateOrderAsync(existingOrder);
 
+                await _fileStorageService.WriteLogAsync(
+                    $"Order {order.OrderId} updated.");
+
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception)
@@ -143,6 +153,9 @@ namespace ABCRetailManagement.Controllers
             try
             {
                 await _tableStorageService.DeleteOrderAsync(id);
+
+                await _fileStorageService.WriteLogAsync(
+                    $"Order {id} deleted.");
 
                 return RedirectToAction(nameof(Index));
             }

@@ -18,7 +18,6 @@
     </button>
 </form>
 
-
 <table class="table">
     <thead>
         <tr>
@@ -35,13 +34,31 @@
     <tbody>
         @foreach (var order in Model)
         {
+            var customer = ((IEnumerable<ABCRetailManagement.Models.Customer>)ViewBag.Customers)
+            .FirstOrDefault(c => c.CustomerId == order.CustomerId);
+
+            var product = ((IEnumerable<ABCRetailManagement.Models.Product>)ViewBag.Products)
+            .FirstOrDefault(p => p.ProductId == order.ProductId);
+
             <tr>
                 <td>@order.OrderId</td>
-                <td>@order.CustomerId</td>
-                <td>@order.ProductId</td>
+
+                <td>
+                    @order.CustomerId : @(customer?.Name ?? "Unknown Customer")
+                </td>
+
+                <td>
+                    @order.ProductId : @(product?.Name ?? "Unknown Product")
+                </td>
+
                 <td>@order.Quantity</td>
+
                 <td>@order.Status</td>
-                <td>@order.OrderDate.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+
+                <td>
+                    @order.OrderDate.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+                </td>
+
                 <td>
                     <a asp-action="Edit"
                        asp-route-id="@order.OrderId">

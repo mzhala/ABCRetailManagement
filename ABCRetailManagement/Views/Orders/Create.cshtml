@@ -13,18 +13,32 @@
 
     <div class="mb-3">
         <label asp-for="CustomerId" class="form-label"></label>
-        <input asp-for="CustomerId"
-               class="form-control"
-               placeholder="e.g. CUST-A83F21" />
+        <select asp-for="CustomerId" class="form-select">
+            <option value="">Select a customer</option>
+
+            @foreach (var customer in ViewBag.Customers)
+            {
+                <option value="@customer.CustomerId">
+                    @customer.CustomerId: @customer.Name
+                </option>
+            }
+        </select>
         <span asp-validation-for="CustomerId"
               class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label asp-for="ProductId" class="form-label"></label>
-        <input asp-for="ProductId"
-               class="form-control"
-               placeholder="e.g. PROD-7A31F2" />
+        <select asp-for="ProductId" class="form-select">
+            <option value="">Select a product</option>
+
+            @foreach (var product in ViewBag.Products)
+            {
+                <option value="@product.ProductId">
+                   @product.ProductId: @product.Name
+                </option>
+            }
+        </select>
         <span asp-validation-for="ProductId"
               class="text-danger"></span>
     </div>

@@ -25,6 +25,7 @@ namespace ABCRetailManagement.Services
             await tableClient.CreateIfNotExistsAsync();
 
             return tableClient;
+                
         }
 
         public async Task<List<Customer>> GetCustomersAsync()
@@ -45,7 +46,9 @@ namespace ABCRetailManagement.Services
                 });
             }
 
-            return customers;
+            return customers
+                .OrderBy(o => o.Name)
+                .ToList();
         }
 
         public async Task<string> AddCustomerAsync(Customer customer)
@@ -152,7 +155,9 @@ namespace ABCRetailManagement.Services
                 });
             }
 
-            return products;
+            return products
+                .OrderBy(o => o.Name)
+                .ToList();
         }
 
         public async Task<string> AddProductAsync(Product product)
@@ -261,7 +266,9 @@ namespace ABCRetailManagement.Services
                 });
             }
 
-            return orders;
+            return orders
+                .OrderByDescending(o => o.OrderDate)
+                .ToList();
         }
 
         public async Task<Order?> GetOrderAsync(string orderId)

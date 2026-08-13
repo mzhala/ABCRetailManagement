@@ -24,11 +24,15 @@ namespace ABCRetailManagement.Controllers
         {
             var orders = await _tableStorageService.GetOrdersAsync();
 
+            await LoadOrderOptions();
+
             return View(orders);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            await LoadOrderOptions();
+
             return View();
         }
 
@@ -38,6 +42,8 @@ namespace ABCRetailManagement.Controllers
         {
             if (!ModelState.IsValid)
             {
+                await LoadOrderOptions();
+
                 return View(order);
             }
 
@@ -60,6 +66,8 @@ namespace ABCRetailManagement.Controllers
                     "",
                     "The order could not be created. Please try again.");
 
+                await LoadOrderOptions();
+
                 return View(order);
             }
         }
@@ -73,6 +81,8 @@ namespace ABCRetailManagement.Controllers
                 return NotFound();
             }
 
+            await LoadOrderOptions();
+
             return View(order);
         }
 
@@ -82,6 +92,7 @@ namespace ABCRetailManagement.Controllers
         {
             if (!ModelState.IsValid)
             {
+                await LoadOrderOptions();
                 return View(order);
             }
 
@@ -96,9 +107,6 @@ namespace ABCRetailManagement.Controllers
                 }
 
                 existingOrder.CustomerId = order.CustomerId;
-                existingOrder.ProductId = order.ProductId;
-                existingOrder.Quantity = order.Quantity;
-                existingOrder.Status = order.Status;
 
                 await _tableStorageService.UpdateOrderAsync(existingOrder);
 
@@ -109,6 +117,8 @@ namespace ABCRetailManagement.Controllers
                 ModelState.AddModelError(
                     "",
                     "The order could not be updated. Please try again.");
+
+                await LoadOrderOptions();
 
                 return View(order);
             }
@@ -162,6 +172,15 @@ namespace ABCRetailManagement.Controllers
             await _orderProcessingService.ProcessNextOrderAsync();
 
             return RedirectToAction(nameof(Index));
+        }
+
+        private async Task LoadOrderOptions()
+        {
+            ViewBag.Customers =
+                await _tableStorageService.GetCustomersAsync();
+
+            ViewBag.Products =
+                await _tableStorageService.GetProductsAsync();
         }
     }
 }
